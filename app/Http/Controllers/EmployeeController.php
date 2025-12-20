@@ -20,6 +20,13 @@ class EmployeeController extends Controller
 
     //3. store employee
     public function store(Request $request){
+        $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:employees',
+        'phone' => 'required|regex:/^[6-9][0-9]{9}$/',
+        'role' => 'required',
+        'photo'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
         $data = $request->only([
         'name',
         'email',
@@ -46,7 +53,25 @@ class EmployeeController extends Controller
     //5.update employee
 
     public function update(Request $request , Employee $employee){
-        $employee->update($request->all());
+        $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:employees',
+        'phone' => 'required|regex:/^[6-9][0-9]{9}$/',
+        'role' => 'required',
+        'photo'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
+    $data = $request->only([
+        'name',
+        'email',
+        'phone',
+        'role',
+        'photo'
+    ]);
+
+    if ($request->hasFile('photo')) {
+        $data['photo'] = $request->photo->store('employees', 'public');
+    }
+        $employee->update($data);
         return redirect()->route('employees.index');
     }
     

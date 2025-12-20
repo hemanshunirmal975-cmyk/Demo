@@ -1,34 +1,22 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\EmployeeController;
+
 Route::get('/', function () {
-    return view('home');
-});
-Route::get('/hello', function () {
-    return view('hello');
+    return view('welcome');
 });
 
-Route::get('/home',[pagecontroller::class,'home']);
-Route::get('/about',[pagecontroller::class,'getabout']);
-Route::get('/contact',[pagecontroller::class,'getcontact']);
-Route::get('/blog',[pagecontroller::class,'getblog']);
-Route::get('/service',[pagecontroller::class,'getservice']);
-Route::get('/gallery',[pagecontroller::class,'getgallery']);
-Route::get('/faq',[pagecontroller::class,'getfaq']);
-Route::get('/carrer',[pagecontroller::class,'getcarrer']);
-Route::get('/team',[pagecontroller::class,'getteam']);
-Route::get('/help',[pagecontroller::class,'gethelp']);
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Add ->name('employees.index') to the end of the index route
-Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-// Add ->name('employees.create') to the end of the create route
-Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+require __DIR__.'/auth.php';
 
-// Add ->name('employees.store') to the end of the store route
-Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
-
-// Add ->name('employees.destroy') to the end of the delete route
-Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');

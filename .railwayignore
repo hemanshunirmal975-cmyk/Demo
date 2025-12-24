@@ -1,0 +1,8 @@
+node_modules/
+employee-frontend/
+tests/
+.git/
+*.md
+!README.md
+.editorconfig
+.scribe/
